@@ -1,15 +1,60 @@
 <resources>
     <string name="app_name">HeartBeat</string>
     <string name="output_hint">
-        Please place your finger on the device\'s camera, covering the flash as well. After
-        10 seconds, you can export the results through the menu.
+        Place your finger on the camera, covering the flash as well, then press Start. The flash
+        lights up, and the measurement begins once the app sees your finger and the colour has
+        stopped changing.
         \n\nThis utility works by measuring the amount of red it sees through the camera, and
         attempting to detect the fluctuations.
         \nIt works better in a darkened room, and when the pressure on the camera is constant.
         \nIf there are multiple cameras on your device, make sure that your finger covers the entire
         field of view in the small viewfinder.
-        \nOnce the measurement is complete, it can be exported or repeated through the menu.
+        \nOnce the measurement is complete, press New measurement to clear it and take another.
+        Every finished reading is saved in the Log tab, where you can tag it with an activity and
+        duration, mark it as invalid, and export it. Changing the activity or the valid/invalid
+        mark under the result changes that log entry too.
+        \nA reading whose beats are irregular, or that shows no clear pulse, is marked invalid
+        automatically; the button under the result marks or unmarks one by hand.
     </string>
+    <string name="start_measurement">Start measurement</string>
+    <string name="new_measurement">New measurement</string>
+    <string name="measuring">Measuring…</string>
+    <string name="ready_prompt">Finger on the camera, then press Start</string>
+    <string name="tab_measure">Measure</string>
+    <string name="tab_log">Log</string>
+    <string name="tab_settings">Settings</string>
+    <string name="log_empty">No log yet. Finish a measurement first.</string>
+    <string name="activity_label">Activity</string>
+    <string-array name="activity_levels">
+        <item>Not set</item>
+        <item>Lying</item>
+        <item>Sitting</item>
+        <item>Standing</item>
+        <item>Walking</item>
+        <item>Aerobic</item>
+        <item>Testing</item>
+    </string-array>
+    <string name="duration_label">Duration in this activity</string>
+    <string name="duration_not_set">Not set</string>
+    <string name="invalid_label">Invalid reading</string>
+    <string name="entry_back">Back to log</string>
+    <string name="place_finger">Cover the camera and the flash with your finger</string>
+    <string name="hold_still">Hold still while the signal settles…</string>
+    <string name="no_steady_finger">No steady finger found on the camera. Cover the camera and the flash with your finger, then press Start.</string>
+    <string name="cancel_measurement">Cancel</string>
+    <string name="invalid_too_few">Too few beats: marked invalid</string>
+    <string name="invalid_irregular">Irregular beats: marked invalid</string>
+    <string name="mark_invalid">Mark as invalid</string>
+    <string name="mark_valid">Mark as valid</string>
+    <string name="status_valid">Valid reading</string>
+    <string name="status_invalid">Invalid reading</string>
+    <string name="status_invalid_testing">Invalid: testing activity</string>
+    <string name="hide_invalid_label">Hide invalid readings</string>
+    <string name="log_all_hidden">Every reading is invalid and hidden. Untick \"Hide invalid readings\" to see them.</string>
+    <string name="save_failed">Could not save this reading to the log.</string>
+    <string name="bpm_format">%.0f bpm</string>
+    <string name="minutes_format">%d min</string>
+    <string name="log_invalid">Invalid</string>
     <string name="output_header_template">Heart rate on %s</string>
     <string name="output_detected_peaks_header">Detected Peaks:</string>
     <string name="send_output_to">Send output to:</string>
@@ -18,15 +63,18 @@
     <string name="raw_values">Measurements (Timestamp, Value)</string>
     <string name="cameraPermissionRequired">Camera permission is required for this application to work.</string>
     <string name="noFlashWarning">Measurement without flash is less reliable.</string>
-    <string name="new_measurement">New Measurement</string>
     <string name="export_result">Export Result</string>
     <string name="export_details">Export Details</string>
     <string name="dateFormat">yyyy-MM-dd\'T\'HH:mm:ssZZZZZ</string>
-    <string name="dateFormatGranular">yyyy-MM-dd\'T\'HH:mm:ss.SSSZZZZZ</string>
+    <string name="dateFormatGranular">HH:mm:ss.SSS</string>
     <string name="camera_not_found">Camera not available.</string>
+    <string name="lens_auto">Auto</string>
+    <string name="lens_title">Camera lens</string>
+    <string name="lens_hint">Which lens reads the pulse. Pick the one your finger covers. Changing it restarts the camera and clears the reading on the Measure tab; readings already taken stay in the log.</string>
+    <string name="lens_unavailable">This phone does not offer a choice of lenses.</string>
     <plurals name="measurement_output_template">
-        <item quantity="zero">Pulse: %2.1f (%d cycle in %2.1f seconds)</item>
-        <item quantity="one">Pulse: %2.1f (%d cycle in %2.1f seconds)</item>
-        <item quantity="other">Pulse: %2.1f (%d cycles in %2.1f seconds)</item>
+        <item quantity="zero">Cycles: %2$d\nTimeframe: %3$.1f s\nPulse: %1$.1f bpm</item>
+        <item quantity="one">Cycles: %2$d\nTimeframe: %3$.1f s\nPulse: %1$.1f bpm</item>
+        <item quantity="other">Cycles: %2$d\nTimeframe: %3$.1f s\nPulse: %1$.1f bpm</item>
     </plurals>
 </resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- legible on both the light and the dark theme -->
+    <color name="status_valid">#43A047</color>
+    <color name="status_invalid">#E53935</color>
+</resources>

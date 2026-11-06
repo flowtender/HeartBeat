@@ -13,6 +13,7 @@
 .externalNativeBuild
 .cxx
 app/release
+app/src/test/resources/readings
 
 # BEGIN https://raw.githubusercontent.com/github/gitignore/master/Android.gitignore
 # Built application files
@@ -105,3 +106,5 @@ lint/tmp/
 # Android Profiling
 *.hprof
 # END https://raw.githubusercontent.com/github/gitignore/master/Android.gitignore
+# Eclipse/Buildship prefs hold absolute paths of the local machine
+/.settings/

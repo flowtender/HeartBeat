@@ -1,60 +1,59 @@
 package eu.berdosi.app.heartbeat;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/** The brightness samples of one reading, in the order they were taken. Thread-safe. */
 class MeasureStore {
-    private final CopyOnWriteArrayList<Measurement<Integer>> measurements = new CopyOnWriteArrayList<>();
-    private int minimum = 2147483647;
-    private int maximum = -2147483648;
+    private long[] times = new long[512];
+    private double[] values = new double[512];
+    private int size = 0;
+    private double minimum = Double.MAX_VALUE;
+    private double maximum = -Double.MAX_VALUE;
 
-    /**
-     * The latest N measurements are always averaged in order to smooth the values before it is
-     * analyzed.
-     *
-     * This value may need to be experimented with - it is better on the class level than putting it
-     * into local scope
-     */
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int rollingAverageSize = 4;
-
-    void add(int measurement) {
-        Measurement<Integer> measurementWithDate = new Measurement<>(new Date(), measurement);
-
-        measurements.add(measurementWithDate);
-        if (measurement < minimum) minimum = measurement;
-        if (measurement > maximum) maximum = measurement;
+    synchronized void add(long timeMs, double value) {
+        if (size == times.length) {
+            times = Arrays.copyOf(times, size * 2);
+            values = Arrays.copyOf(values, size * 2);
+        }
+        times[size] = timeMs;
+        values[size] = value;
+        size++;
+        if (value < minimum) minimum = value;
+        if (value > maximum) maximum = value;
     }
 
-    CopyOnWriteArrayList<Measurement<Float>> getStdValues() {
+    synchronized int size() {
+        return size;
+    }
+
+    synchronized long[] times() {
+        return Arrays.copyOf(times, size);
+    }
+
+    synchronized double[] values() {
+        return Arrays.copyOf(values, size);
+    }
+
+    /**
+     * The samples scaled to 0-1 between the lowest and highest seen so far.
+     *
+     * @param rolling each value is the average of this many latest samples; 1 for none
+     */
+    synchronized CopyOnWriteArrayList<Measurement<Float>> getStdValues(int rolling) {
         CopyOnWriteArrayList<Measurement<Float>> stdValues = new CopyOnWriteArrayList<>();
 
-        for (int i = 0; i < measurements.size(); i++) {
-            int sum = 0;
-            for (int rollingAverageCounter = 0; rollingAverageCounter < rollingAverageSize; rollingAverageCounter++) {
-                sum += measurements.get(Math.max(0, i - rollingAverageCounter)).measurement;
+        for (int i = 0; i < size; i++) {
+            double sum = 0;
+            for (int back = 0; back < rolling; back++) {
+                sum += values[Math.max(0, i - back)];
             }
-
-            Measurement<Float> stdValue =
-                    new Measurement<>(
-                            measurements.get(i).timestamp,
-                            ((float)sum / rollingAverageSize - minimum ) / (maximum - minimum));
-            stdValues.add(stdValue);
+            stdValues.add(new Measurement<>(
+                    new Date(times[i]),
+                    (float) ((sum / rolling - minimum) / (maximum - minimum))));
         }
 
         return stdValues;
-    }
-
-    @SuppressWarnings("SameParameterValue") // this parameter can be set at OutputAnalyzer
-    CopyOnWriteArrayList<Measurement<Integer>> getLastStdValues(int count) {
-        if (count < measurements.size()) {
-            return  new CopyOnWriteArrayList<>(measurements.subList(measurements.size() - 1 - count, measurements.size() - 1));
-        } else {
-            return measurements;
-        }
-    }
-
-    Date getLastTimestamp() {
-        return measurements.get(measurements.size() - 1).timestamp;
     }
 }
